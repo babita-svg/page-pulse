@@ -1,23 +1,29 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
+const express = require('express');
+const cors = require('cors');
+require('dotenv').config();
+
+const auditRoutes = require('./routes/audit');
 
 const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.json({
-    message: "Page Pulse API is running 🚀"
-  });
-});
-
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
-const auditRoutes = require("./routes/audit");
+// Enable CORS for all frontend origins
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type']
+}));
 
-app.use("/api", auditRoutes);
+app.use(express.json());
+
+// Main API Routes
+app.use('/api', auditRoutes);
+
+// Base Route
+app.get('/', (req, res) => {
+  res.json({ message: "Page Pulse API is running 🚀" });
+});
+
+app.listen(PORT, () => {
+  console.log(`[PagePulse API] Server running on port ${PORT}`);
+});
